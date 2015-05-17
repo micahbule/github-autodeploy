@@ -2,10 +2,9 @@ var async = require('async');
 var shell = require('shelljs');
 var mkdirp = require('mkdirp');
 var projects = require('./projects');
+var config = require('./config');
 
 exports.deploy = function (repository, branch, callback) {
-	// console.log('Repository', repository);
-
 	var checkRepository = function (project, cb) {
 		return cb(project.repository === repository.full_name);
 	}
@@ -14,7 +13,7 @@ exports.deploy = function (repository, branch, callback) {
 		if (!project) return callback('No matching project with received GitHub hook.');
 		if (project.branch_to_watch !== branch) return callback('Reference branch and branch to watch does not match.');
 
-		var root_deployment_path = '/home/mico/Projects/GitHub Deployments/';
+		var root_deployment_path = config.root_deployment_path;
 		var project_directory_path = root_deployment_path + project.name;
 
 		async.waterfall([
