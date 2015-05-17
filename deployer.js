@@ -7,7 +7,7 @@ exports.deploy = function (repository, branch, callback) {
 	// console.log('Repository', repository);
 
 	var checkRepository = function (project, cb) {
-		return cb(project.repository_url === repository.html_url);
+		return cb(project.repository === repository.full_name);
 	}
 
 	async.detect(projects, checkRepository, function (project) {
@@ -32,7 +32,7 @@ exports.deploy = function (repository, branch, callback) {
 
 						shell.cd(project_directory_path);
 						shell.exec('git init');
-						shell.exec('git remote add origin ' + project.repository_url + '.git');
+						shell.exec('git remote add origin git@github.com:' + project.repository + '.git');
 						shell.exec('git pull -u origin ' + project.branch_to_watch, function (code, output) {
 							shell.exec('git branch --set-upstream-to=origin/' + project.branch_to_watch);
 							cb();
