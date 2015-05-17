@@ -1,0 +1,29 @@
+{
+  "name": "github-autodeploy-script",
+  "version": "1.0.0",
+  "description": "GitHub Automated Deployment Script for Cynder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/micahbule/github-autodeploy"
+  },
+  "keywords": [
+    "github",
+    "autodeploy",
+    "nodejs"
+  ],
+  "author": "Micah Andrew Bule",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/micahbule/github-autodeploy/issues"
+  },
+  "homepage": "https://github.com/micahbule/github-autodeploy",
+  "dependencies": {
+    "async": "^0.9.0",
+    "mkdirp": "^0.5.1",
+    "shelljs": "^0.4.0"
+  }
+}

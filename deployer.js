@@ -1,0 +1,68 @@
+var async = require('async');
+var shell = require('shelljs');
+var mkdirp = require('mkdirp');
+var projects = require('./projects');
+
+exports.deploy = function (repository, branch, callback) {
+	// console.log('Repository', repository);
+
+	var checkRepository = function (project, cb) {
+		return cb(project.repository_url === repository.html_url);
+	}
+
+	async.detect(projects, checkRepository, function (project) {
+		if (!project) return callback('No matching project with received GitHub hook.');
+		if (project.branch_to_watch !== branch) return callback('Reference branch and branch to watch does not match.');
+
+		var root_deployment_path = '/home/mico/Projects/GitHub Deployments/';
+		var project_directory_path = root_deployment_path + project.name;
+
+		async.waterfall([
+			// Go to project directory, if it exists
+			function (cb) {
+				shell.cd(project_directory_path);
+				cb();
+			},
+			// If project directory does not exist, create and pull the repository
+			function (cb) {
+				if (shell.error()) {
+					mkdirp(project_directory_path, null, function (err, made) {
+						if (err) return console.log(err);
+						console.log('MADE', made);
+
+						shell.cd(project_directory_path);
+						shell.exec('git init');
+						shell.exec('git remote add origin ' + project.repository_url + '.git');
+						shell.exec('git pull -u origin ' + project.branch_to_watch, function (code, output) {
+							shell.exec('git branch --set-upstream-to=origin/' + project.branch_to_watch);
+							cb();
+						});
+					});
+				} else {
+					cb();
+				}
+			},
+			// Pull updates from GitHub
+			function (cb) {
+				shell.exec('git pull', function (code, output) {
+					cb();
+				});
+			},
+			// Install Node dependencies, if there are any
+			function (cb) {
+				shell.exec('npm install', function (code, output) {
+					cb();
+				});
+			},
+			// Install Bower dependencies, if there are any
+			function (cb) {
+				shell.exec('bower install --allow-root', function (code, output) {
+					cb();
+				});
+			}
+		], function (err, results) {
+			console.log('All automated deployment tasks for', project.name, 'project has been completed.');
+
+		});
+	});
+}
