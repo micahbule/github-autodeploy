@@ -4,6 +4,7 @@
 
 var http = require('http');
 var deployer = require('./deployer');
+var shell = require('shelljs');
 
 // Create the GitHub Hook Service server to catch all incoming requests from GitHub
 http.createServer(function (req, res) {
@@ -52,7 +53,11 @@ http.createServer(function (req, res) {
 		var branch = parsedData.ref.split('/')[2];
 
 		deployer.deploy(repository, branch, function (err) {
-			console.log(err);
+			if (err) console.log(err);
+
+			shell.exec('grunt build-app', function (code, output) {
+				shell.exec('grunt bowercopy');
+			});
 		});
 	});
 

@@ -61,7 +61,7 @@ exports.deploy = function (repository, branch, callback) {
 			}
 		], function (err, results) {
 			console.log('All automated deployment tasks for', project.name, 'project has been completed.');
-
+			callback();
 		});
 	});
 }
