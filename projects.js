@@ -1,7 +1,7 @@
 module.exports = [
 	{
-		name: 'mizumeter-app',
-		repository: 'CynderTech/mizumeter-app',
+		name: 'project_name',
+		repository: 'User/repository-name',
 		branch_to_watch: 'master'
 	}
 ];
