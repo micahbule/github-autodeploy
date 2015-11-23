@@ -35,7 +35,7 @@ http.createServer(function (req, res) {
 	}
 
 	console.log('Initial validations complete.');
-	console.log('Retrieving payload');
+	console.log('Retrieving payload.');
 
 	// If request passed all initial validations, proceed with getting the payload
 	var data = '';

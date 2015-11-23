@@ -9,12 +9,12 @@ exports.deploy = function (repository, branch, callback) {
 		return cb(project.repository === repository.full_name);
 	}
 	
-	console.log('Searching for', repository.full_name, '...');
+	console.log('Searching for', repository.full_name + '...');
 	
 	async.detect(projects, checkRepository, function (project) {
 		if (!project) return callback('No matching project with received GitHub hook.');
 		
-		console.log('Project found!');
+		console.log('Project found.');
 		
 		if (project.branch_to_watch !== branch) return callback('Reference branch and branch to watch does not match.');
 
@@ -68,7 +68,7 @@ exports.deploy = function (repository, branch, callback) {
 				cb();
 			}
 		], function (err, results) {
-			console.log('All automated deployment tasks for', project.name, 'project has been completed.');
+			console.log('All automated deployment tasks for', project.name, 'project have been completed!');
 			callback();
 		});
 	});
