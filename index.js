@@ -13,17 +13,26 @@ http.createServer(function (req, res) {
 	console.log('Running validations.');
 
 	// Check if the request method is POST
-	if (req.method.toUpperCase() !== 'POST') return res.end('Request is not a POST.');
+	if (req.method.toUpperCase() !== 'POST') {
+		console.log('Request is not a POST.');
+		return res.end('Request is not a POST.');
+	}
 
 	// Get the request headers
 	var headers = req.headers;
 
 	// Get user agent to check if request is from GitHub
 	var user_agent = headers['user-agent'];
-	if (!/^GitHub-Hookshot/.test(user_agent)) return res.end('Request is not from GitHub.');
+	if (!/^GitHub-Hookshot/.test(user_agent)) {
+		console.log('Request is not from GitHub.');
+		return res.end('Request is not from GitHub.');
+	}
 
 	// Check if GitHub Hook event is push
-	if (headers['x-github-event'] !== 'push') return res.end('Request is not from a "push" event hook.');
+	if (headers['x-github-event'] !== 'push') {
+		console.log('Request is not from a "push" event hook.');
+		return res.end('Request is not from a "push" event hook.');
+	}
 
 	console.log('Initial validations complete.');
 	console.log('Retrieving payload');
@@ -40,7 +49,10 @@ http.createServer(function (req, res) {
 		console.log('Payload retrieved.');
 		
 		// If there's no payload, tell 'em something has gone wrong
-		if (data === '') return res.end('No data received mate.');
+		if (data === '') {
+			console.log('No data received mate.');
+			return res.end('No data received mate.');
+		}
 
 		console.log('Processing payload.');
 
@@ -55,7 +67,8 @@ http.createServer(function (req, res) {
 
 		deployer.deploy(repository, branch, function (err, commands) {
 			if (err) {
-				return console.log(err);
+				console.log(err);
+				return res.end(err);
 			}
 			
 			if (commands && commands.length) {
@@ -67,6 +80,7 @@ http.createServer(function (req, res) {
 	});
 
 	// Tell GitHub a nice piratey cheer after everything is complete!
+	console.log('Yoho pirate!');
 	return res.end('Yoho pirate!');
 }).listen(config.port);
 
