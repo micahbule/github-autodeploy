@@ -5,6 +5,7 @@
 var http = require('http');
 var deployer = require('./deployer');
 var shell = require('shelljs');
+var config = require('./config');
 
 // Create the GitHub Hook Service server to catch all incoming requests from GitHub
 http.createServer(function (req, res) {
@@ -67,6 +68,6 @@ http.createServer(function (req, res) {
 
 	// Tell GitHub a nice piratey cheer after everything is complete!
 	return res.end('Yoho pirate!');
-}).listen(22539);
+}).listen(config.port);
 
-console.log('GitHub WebHook Service running on port 22539');
+console.log('GitHub WebHook Service running on port ' + config.port);
