@@ -11,4 +11,5 @@ NodeJS >= v10.x is required to run this script.
 	- name: The name of your project
 	- repository: The repository URL (omit the http://github.com)
 	- branch_to_watch: The branch to watch for changes for the automatic deployment
-3. Open `config.js` to specify the directory on where to deploy the project
+    - build_commands: The commands you need to execute after a successful `git pull`
+3. Open `config.js` to specify the port to use and the directory where projects will be deployed.
