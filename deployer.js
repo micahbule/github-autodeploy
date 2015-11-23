@@ -46,22 +46,10 @@ exports.deploy = function (repository, branch, callback) {
 				shell.exec('git pull', function (code, output) {
 					cb();
 				});
-			},
-			// Install Node dependencies, if there are any
-			function (cb) {
-				shell.exec('npm install', function (code, output) {
-					cb();
-				});
-			},
-			// Install Bower dependencies, if there are any
-			function (cb) {
-				shell.exec('bower install --allow-root', function (code, output) {
-					cb();
-				});
 			}
 		], function (err, results) {
 			console.log('All automated deployment tasks for', project.name, 'project has been completed.');
-			callback();
+			callback(null, project.commands_to_run);
 		});
 	});
 }

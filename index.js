@@ -52,12 +52,16 @@ http.createServer(function (req, res) {
 		// Get hook reference branch
 		var branch = parsedData.ref.split('/')[2];
 
-		deployer.deploy(repository, branch, function (err) {
-			if (err) console.log(err);
-
-			shell.exec('grunt build-app', function (code, output) {
-				shell.exec('grunt bowercopy');
-			});
+		deployer.deploy(repository, branch, function (err, commands) {
+			if (err) {
+				return console.log(err);
+			}
+			
+			if (commands && commands.length) {
+				for (var i in commands) {
+					shell.exec(commands[i]);
+				}
+			}
 		});
 	});
 
