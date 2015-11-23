@@ -65,19 +65,10 @@ http.createServer(function (req, res) {
 		// Get hook reference branch
 		var branch = parsedData.ref.split('/')[2];
 
-		deployer.deploy(repository, branch, function (err, commands) {
+		deployer.deploy(repository, branch, function (err) {
 			if (err) {
 				console.log(err);
 				return res.end(err);
-			}
-			
-			if (commands && commands.length) {
-				for (var i in commands) {
-					var command = commands[i];
-					
-					console.log('Executing command:', command)
-					shell.exec(command);
-				}
 			}
 			
 			// Tell GitHub a nice piratey cheer after everything is complete!

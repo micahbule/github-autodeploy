@@ -51,10 +51,25 @@ exports.deploy = function (repository, branch, callback) {
 				shell.exec('git pull', function (code, output) {
 					cb();
 				});
+			},
+			// Execute build commands
+			function (cb) {
+				var commands = project.build_commands;
+				
+				if (commands && commands.length) {
+					for (var i in commands) {
+						var command = commands[i];
+						
+						console.log('Executing command:', command)
+						shell.exec(command);
+					}
+				}
+				
+				cb();
 			}
 		], function (err, results) {
 			console.log('All automated deployment tasks for', project.name, 'project has been completed.');
-			callback(null, project.build_commands);
+			callback();
 		});
 	});
 }
