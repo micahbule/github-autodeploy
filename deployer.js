@@ -8,9 +8,14 @@ exports.deploy = function (repository, branch, callback) {
 	var checkRepository = function (project, cb) {
 		return cb(project.repository === repository.full_name);
 	}
-
+	
+	console.log('Searching for', repository.full_name, '...');
+	
 	async.detect(projects, checkRepository, function (project) {
 		if (!project) return callback('No matching project with received GitHub hook.');
+		
+		console.log('Project found!');
+		
 		if (project.branch_to_watch !== branch) return callback('Reference branch and branch to watch does not match.');
 
 		var root_deployment_path = config.root_deployment_path;
@@ -27,7 +32,7 @@ exports.deploy = function (repository, branch, callback) {
 				if (shell.error()) {
 					mkdirp(project_directory_path, null, function (err, made) {
 						if (err) return console.log(err);
-						console.log('MADE', made);
+						console.log('Created', made);
 
 						shell.cd(project_directory_path);
 						shell.exec('git init');

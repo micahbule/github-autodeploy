@@ -73,15 +73,18 @@ http.createServer(function (req, res) {
 			
 			if (commands && commands.length) {
 				for (var i in commands) {
-					shell.exec(commands[i]);
+					var command = commands[i];
+					
+					console.log('Executing command:', command)
+					shell.exec(command);
 				}
 			}
+			
+			// Tell GitHub a nice piratey cheer after everything is complete!
+			console.log('Yoho pirate!');
+			return res.end('Yoho pirate!');
 		});
 	});
-
-	// Tell GitHub a nice piratey cheer after everything is complete!
-	console.log('Yoho pirate!');
-	return res.end('Yoho pirate!');
 }).listen(config.port);
 
-console.log('GitHub WebHook Service running on port ' + config.port);
+console.log('GitHub WebHook Service running on port', config.port);
