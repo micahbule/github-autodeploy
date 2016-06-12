@@ -6,12 +6,15 @@ var config = require('./config');
 
 exports.deploy = function (repository, branch, callback) {
 	var checkRepository = function (project, cb) {
-		return cb(project.repository === repository.full_name);
+		return cb(project.repository === repository.full_name && project.branch_to_watch === branch);
 	}
-
+	
+	console.log('Searching for', repository.full_name + '...');
+	
 	async.detect(projects, checkRepository, function (project) {
-		if (!project) return callback('No matching project with received GitHub hook.');
-		if (project.branch_to_watch !== branch) return callback('Reference branch and branch to watch does not match.');
+		if (!project) return callback('No matching project with received GitHub hook or reference branch and branch to watch does not match.');
+		
+		console.log('Project found.');
 
 		var root_deployment_path = config.root_deployment_path;
 		var project_directory_path = root_deployment_path + project.name;
@@ -27,7 +30,7 @@ exports.deploy = function (repository, branch, callback) {
 				if (shell.error()) {
 					mkdirp(project_directory_path, null, function (err, made) {
 						if (err) return console.log(err);
-						console.log('MADE', made);
+						console.log('Created', made);
 
 						shell.cd(project_directory_path);
 						shell.exec('git init');
@@ -47,20 +50,23 @@ exports.deploy = function (repository, branch, callback) {
 					cb();
 				});
 			},
-			// Install Node dependencies, if there are any
+			// Execute build commands
 			function (cb) {
-				shell.exec('npm install', function (code, output) {
-					cb();
-				});
-			},
-			// Install Bower dependencies, if there are any
-			function (cb) {
-				shell.exec('bower install --allow-root', function (code, output) {
-					cb();
-				});
+				var commands = project.build_commands;
+				
+				if (commands && commands.length) {
+					for (var i in commands) {
+						var command = commands[i];
+						
+						console.log('Executing command:', command)
+						shell.exec(command);
+					}
+				}
+				
+				cb();
 			}
 		], function (err, results) {
-			console.log('All automated deployment tasks for', project.name, 'project has been completed.');
+			console.log('All automated deployment tasks for', project.name, 'project have been completed!');
 			callback();
 		});
 	});
